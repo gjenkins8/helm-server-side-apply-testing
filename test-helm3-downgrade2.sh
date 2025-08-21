@@ -20,7 +20,7 @@ ${HELM4} delete --ignore-not-found test-helm3-downgrade2
 
 # 1/ Install w/ SSA
 ${HELM4} install --server-side=true test-helm3-downgrade2 test-chart/
-test "null" == $(${HELM3} get metadata test1-helm3-downgrade1 -o json | jq -r .applyMethod)
+test "null" == $(${HELM3} get metadata test-helm3-downgrade2 -o json | jq -r .applyMethod)
 test "ssa" == $(${HELM4} get metadata test-helm3-downgrade2 -o json | jq -r .applyMethod)
 test "Apply" == $(kubectl get deploy test-helm3-downgrade2-test-chart -o json --show-managed-fields | jq -r '.metadata.managedFields[] | select(.manager == "helm") | .operation')
 
@@ -32,14 +32,14 @@ test "Apply" == $(kubectl get deploy test-helm3-downgrade2-test-chart -o json --
 
 # 3/ Upgrade with Helm4 with explicit SSA
 ${HELM4} upgrade --server-side=true test-helm3-downgrade2 test-chart/ --set replicaCount=2
-test "null" == $(${HELM3} get metadata test1-helm3-downgrade1 -o json | jq -r .applyMethod)
+test "null" == $(${HELM3} get metadata test-helm3-downgrade2 -o json | jq -r .applyMethod)
 test "ssa" == $(${HELM4} get metadata test-helm3-downgrade2 -o json | jq -r .applyMethod)
 test "Apply" == $(kubectl get deploy test-helm3-downgrade2-test-chart -o json --show-managed-fields | jq -r '.metadata.managedFields[] | select(.manager == "helm") | .operation')
 test "2" == $(kubectl get deploy test-helm3-downgrade2-test-chart -o json | jq -r '.spec.replicas')
 
 # 4/ Upgrade with Helm4 (will retain SSA)
 ${HELM4} upgrade test-helm3-downgrade2 test-chart/ --set replicaCount=3
-test "null" == $(${HELM3} get metadata test1-helm3-downgrade1 -o json | jq -r .applyMethod)
+test "null" == $(${HELM3} get metadata test-helm3-downgrade2 -o json | jq -r .applyMethod)
 test "ssa" == $(${HELM4} get metadata test-helm3-downgrade2 -o json | jq -r .applyMethod)
 test "Apply" == $(kubectl get deploy test-helm3-downgrade2-test-chart -o json --show-managed-fields | jq -r '.metadata.managedFields[] | select(.manager == "helm") | .operation')
 test "3" == $(kubectl get deploy test-helm3-downgrade2-test-chart -o json | jq -r '.spec.replicas')

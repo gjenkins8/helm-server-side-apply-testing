@@ -12,7 +12,6 @@ if [[ $(${HELM3} version --template='{{.Version}}') =~ ^"v3\." ]]; then
     exit 1
 fi
 
-
 #
 # Scenario: Helm3 upgrade of Helm4 SSA installed chart succeeds, then Helm3 object update succeeds, and then able to upgrade with Helm4 SSA
 # (finally, show SSA update on Helm CSA managed field requires conflicts to be forced)
